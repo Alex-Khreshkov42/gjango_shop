@@ -1,0 +1,27 @@
+{% extends 'app/../base.html' %}
+
+{% block head_text %}
+    <h1 align="center">Item's page: {{ item.title.capitalize }}</h1>
+{% endblock %}
+
+{% block categories %}
+{% endblock %}
+
+{% block body %}
+    <div class="item-block">
+        <img src="{{ item.image.url }}">
+        Item: {{ item.title }}<br>
+        Category: {{ item.category }}<br>
+        Price: {{ item.price }}$ <br>
+        Description: {{ item.description|safe }}<br>
+        <form method="post" action="{% url 'add_item' item.slug %}">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-success" id="{{ item.id }}">Add to cart</button>
+        </form>
+    </div>
+    <hr>
+    <div class="comments">
+        <h2 align="center">Comments</h2>
+    </div>
+
+{% endblock %}
