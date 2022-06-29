@@ -1,7 +1,20 @@
-img {
+.item_img{
     display: block;
     width: 400px;
     height: 300px;
+}
+
+#profile_img{
+    width: 200px;
+    height: 200px;
+}
+
+.profile_content{
+    margin-left: 10%;
+    margin-right: 10%;
+}
+.profile_info{
+    margin-top: 5%;
 }
 
 .selected {

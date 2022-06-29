@@ -3,7 +3,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.views.decorators.http import require_POST
 
 from app.forms import UpdateCountForm
-from app.models import Item, Category, Cart
+from app.models import Item, Category, Cart, User, Profile
 
 
 def main(request):
@@ -88,3 +88,13 @@ def update_count(request, item_slug):
         cart.change_quantity(item, form.cleaned_data['quantity'])
     return redirect('show_cart')
 
+
+def show_profile(request, pk):
+    profile = get_object_or_404(Profile, user_id=pk)
+    context = {
+        'user_profile': profile,
+    }
+    return render(request, 'app/profile.html', context=context)
+
+def make_order(request):
+    pass

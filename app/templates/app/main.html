@@ -43,7 +43,7 @@
     {% if items %}
         {% for item in items %}
             <div class="item-block">
-                <img  src="{{ item.image.url }}">
+                <img class="item_img" src="{{ item.image.url }}">
                 Item: <a href="{{ item.get_absolute_url }}">{{ item.title }}</a><br>
                 Category: {{ item.category }}<br>
                 Price: {{ item.price }}$ <br>

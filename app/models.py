@@ -3,6 +3,8 @@ from decimal import Decimal
 from ckeditor.fields import RichTextField
 from django.contrib.auth.models import User
 from django.db import models
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 from django.urls import reverse
 
 
@@ -89,10 +91,27 @@ class Cart:
         del self.session['cart']
         self.save()
 
-# class ClientProfile(models.Model):
-#     user = models.OneToOneField(User,on_delete=models.CASCADE)
-#     full_name = models.TextField(max_length=200,blank=True)
-#     location = models.CharField(max_length=30,blank=True)
-#     birth_date = models.DateField(null=True,blank=True)
+
+class Profile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    phone = models.CharField(max_length=15, blank=True)
+    location = models.CharField(max_length=30, blank=True)
+    birth_date = models.DateField(blank=True)
+    profile_pic = models.ImageField(null=True, blank=True, upload_to="profiles_images/")
+    orders = models.ForeignKey('Order', on_delete=models.SET_NULL, blank=True, null=True)
+
+    def __str__(self):
+        return f"User {self.user.username}"
+
+
+@receiver(post_save, sender=User)
+def create_user_profile(sender, instance, created, **kwargs):
+    if created:
+        Profile.objects.create(user=instance)
+
+
+@receiver(post_save, sender=User)
+def save_user_profile(sender, instance, **kwargs):
+    instance.profile.save()
 
 

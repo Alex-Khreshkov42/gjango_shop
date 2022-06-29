@@ -10,7 +10,7 @@
     {% if cart %}
         {% for item in cart %}
             <div class="item-block">
-                <img src="{{ item.image.url }}">
+                <img class="item_img" src="{{ item.image.url }}">
                 Item: <a href="{{ item.get_absolute_url }}">{{ item.title }}</a><br>
                 <form action="{% url 'update_count' item.slug %}" method="post">
                     {% csrf_token %}

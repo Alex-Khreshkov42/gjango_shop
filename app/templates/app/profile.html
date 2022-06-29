@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block head_text %}
+    <div class="alert alert-primary" role="alert">
+        <h1 align="center">{{ user_profile.user.username }}'s profile</h1>
+    </div>
+{% endblock %}
+
+{% block body %}
+    <div class="profile_content">
+        {% if user_profile.profile_pic %}
+            <img src="{{ user_profile.profile_pic.url }}">
+        {% else %}
+            <img id="profile_img" src="{% static 'media/profiles_images/ava.png' %}">
+        {% endif %}
+        {{ user_profile.user.username }}
+        <div class="profile_info">
+            <div class="container">
+                <div class="row">
+                    <div class="col-sm">
+                        Name:
+                        {% if user_profile.user.first_name %}
+                            {{ user_profile.user.first_name }}
+                        {% endif %}
+                    </div>
+                    <div class="col-sm">
+                        Last Name:
+                        {% if user_profile.user.last_name %}
+                            {{ user_profile.user.last_name }}
+                        {% endif %}
+                    </div>
+                    <div class="col-sm">
+                        Phone:
+                        {% if user_profile.phone %}
+                            {{ user_profile.phone }}
+                        {% endif %}
+                    </div>
+                    <div class="col-sm">
+                        Date of birth:
+                        {% if user_profile.birth_date %}
+                            {{ user_profile.birth_date }}
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        <hr>
+        {% if user_profile.orders %}
+            <h1 align="center">Orders: </h1>
+        {% else %}
+            <h1 align="center">No orders </h1>
+        {% endif %}
+        </div>
+    </div>
+{% endblock %}
