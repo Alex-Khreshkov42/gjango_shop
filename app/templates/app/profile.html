@@ -8,11 +8,7 @@
 
 {% block body %}
     <div class="profile_content">
-        {% if user_profile.profile_pic %}
             <img id="profile_img" src="{{ user_profile.profile_pic.url }}">
-        {% else %}
-            <img id="profile_img" src="{% static 'media/profiles_images/ava.png' %}">
-        {% endif %}
         {{ user_profile.user.username }}
         <div class="profile_info">
             <div class="container">

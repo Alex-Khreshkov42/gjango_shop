@@ -12,5 +12,5 @@ urlpatterns = [
     path('remove/<slug:item_slug>/', remove_from_cart, name='delete_item'),
     path('cart/update-item-count/<slug:item_slug>/', update_count, name='update_count'),
     path('user-profile/<int:pk>/', show_profile, name='user_profile'),
-    path('order/', make_order, name='make_order')
+    path('order/', make_order, name='make_order'),
 ]

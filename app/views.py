@@ -2,8 +2,8 @@ from django.http import HttpResponse
 from django.shortcuts import render, get_object_or_404, redirect, get_list_or_404
 from django.views.decorators.http import require_POST
 
-from app.forms import UpdateCountForm, OrderForm
-from app.models import Item, Category, Cart, User, Profile, Order
+from app.forms import UpdateCountForm, OrderForm, AddCommentForm
+from app.models import Item, Category, Cart, User, Profile, Order, RatingMark, Comment
 
 
 def main(request):
@@ -43,9 +43,22 @@ def show_by_category(request, cat_slug):
 def show_item(request, item_slug):
     item = Item.objects.get(slug=item_slug)
     title = item.title
+    comments = Comment.objects.filter(item_id__slug=item_slug)
+    form = AddCommentForm()
+
+    if request.method == 'POST':
+        form = AddCommentForm(request.POST)
+        if form.is_valid():
+            form = form.save(commit=False)
+            form.user = request.user
+            form.item = item
+            form.save()
+            return redirect(item.get_absolute_url())
     context = {
         'item': item,
         'title': title,
+        'comments': comments,
+        'form': form,
     }
     return render(request, 'app/item.html', context=context)
 
@@ -91,16 +104,16 @@ def update_count(request, item_slug):
 
 def show_profile(request, pk):
     profile = get_object_or_404(Profile, user_id=pk)
-    user = get_object_or_404(User,id=pk)
+    user = get_object_or_404(User, id=pk)
     orders = Order.objects.filter(user_id=pk)
-    #items = get_list_or_404(Item,id)
-    #items = Item.objects.filter(id__in=product_ids)  # 1 2 3
-    #items = get_list_or_404(Item, id__in=)
+    # items = get_list_or_404(Item,id)
+    # items = Item.objects.filter(id__in=product_ids)  # 1 2 3
+    # items = get_list_or_404(Item, id__in=)
 
     context = {
         'user_profile': profile,
-        'orders' : orders,
-        'user':user,
+        'orders': orders,
+        'user': user,
     }
     return render(request, 'app/profile.html', context=context)
 
@@ -110,7 +123,7 @@ def make_order(request):
     is_cart = bool(cart)
     if request.method == 'POST':
         updated_request = request.POST.copy()
-        updated_request.update({'total_cost': cart.get_total_price(),'user':request.user.id})
+        updated_request.update({'total_cost': cart.get_total_price(), 'user': request.user.id})
         form = OrderForm(updated_request)
         order = form.save(commit=False)
         order.user = request.user

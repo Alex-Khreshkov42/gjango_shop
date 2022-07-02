@@ -132,3 +132,22 @@ class Order(models.Model):
 
     def __str__(self):
         return f"Order №{self.id}"
+
+
+class RatingMark(models.Model):
+    mark = models.SmallIntegerField(default=5)
+
+    def __str__(self):
+        return f"{self.mark}"
+
+
+class Comment(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    item = models.ForeignKey(Item, on_delete=models.CASCADE)
+    text = models.TextField(max_length=3000)
+    created = models.DateTimeField(auto_now_add=True)
+    mark = models.ForeignKey(RatingMark, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f"Coment on: {self.item}"
+
