@@ -20,8 +20,12 @@
         </form>
     </div>
     <hr>
+    {% if comments %}
     <div class="comments">
         <h2 align="center">Comments</h2>
     </div>
+    {% else %}
+        <h3 align="center">Leave the first comment!</h3>
+    {% endif %}
 
 {% endblock %}

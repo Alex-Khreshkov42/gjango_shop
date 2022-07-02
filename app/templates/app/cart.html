@@ -28,7 +28,7 @@
         {% endfor %}
         <h3 align="center"> Total: {{ cart.get_total_price }}$</h3>
         <div class="col-md-12 text-center">
-            <button type="submit" class="btn btn-primary">Make order</button>
+            <a href="{% url 'make_order' %}" type="submit" class="btn btn-primary">Make order</a>
         </div>
     {% else %}
         <h1 align="center"> Cart is empty :(</h1>

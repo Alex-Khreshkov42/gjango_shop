@@ -22,8 +22,9 @@
     pointer-events: none;
     cursor: default;
 }
-.menu {
 
+.order-form{
+    margin: 3%;
 }
 
 .item-block {
@@ -33,7 +34,9 @@
 .comments {
 
 }
-
+#order-form{
+    margin: 5px;
+}
 ul {
     list-style: none; /*убираем маркеры списка*/
     margin: 0; /*убираем отступы*/

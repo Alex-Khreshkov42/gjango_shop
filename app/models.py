@@ -1,4 +1,5 @@
 from decimal import Decimal
+from model_utils import Choices
 
 from ckeditor.fields import RichTextField
 from django.contrib.auth.models import User
@@ -71,12 +72,12 @@ class Cart:
         # cart:{'1': {'quantity': '1', 'price': '999.0'}}
         for product in products:
             product.quantity = int(self.cart[str(product.id)]['quantity'])
-            product.price = Decimal(self.cart[str(product.id)]['price'])
+            product.price = float(self.cart[str(product.id)]['price'])
             product.total_price = product.quantity * product.price
             yield product
 
     def get_total_price(self):
-        return sum(Decimal(item['price']) * int(item['quantity']) for item in self.cart.values())
+        return sum(float(item['price']) * int(item['quantity']) for item in self.cart.values())
 
     def remove(self, product):
         if str(product.id) in self.cart.keys():
@@ -115,3 +116,19 @@ def save_user_profile(sender, instance, **kwargs):
     instance.profile.save()
 
 
+class Order(models.Model):
+    allowed_statuses = Choices('formed', 'approved', 'done')
+    allowed_issue_points = Choices('Kiev, str. Peremohi 12', 'Kharkiv, str. Klochkovskay 123')
+    status = models.CharField(max_length=15, choices=allowed_statuses, default=allowed_statuses.formed)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    items = models.ManyToManyField(Item)
+    created = models.DateField(auto_now_add=True)
+    updated = models.DateField(auto_now=True)
+    full_name = models.CharField(max_length=60)
+    phone = models.CharField(max_length=15)
+    issue_point = models.CharField(max_length=50, choices=allowed_issue_points, blank=True)
+    delivery_address = models.CharField(max_length=50, blank=True)
+    total_cost = models.DecimalField(max_digits=7, decimal_places=3)
+
+    def __str__(self):
+        return f"Order №{self.id}"

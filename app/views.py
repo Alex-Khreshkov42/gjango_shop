@@ -1,9 +1,9 @@
 from django.http import HttpResponse
-from django.shortcuts import render, get_object_or_404, redirect
+from django.shortcuts import render, get_object_or_404, redirect, get_list_or_404
 from django.views.decorators.http import require_POST
 
-from app.forms import UpdateCountForm
-from app.models import Item, Category, Cart, User, Profile
+from app.forms import UpdateCountForm, OrderForm
+from app.models import Item, Category, Cart, User, Profile, Order
 
 
 def main(request):
@@ -91,10 +91,37 @@ def update_count(request, item_slug):
 
 def show_profile(request, pk):
     profile = get_object_or_404(Profile, user_id=pk)
+    user = get_object_or_404(User,id=pk)
+    orders = Order.objects.filter(user_id=pk)
+    #items = get_list_or_404(Item,id)
+    #items = Item.objects.filter(id__in=product_ids)  # 1 2 3
+    #items = get_list_or_404(Item, id__in=)
+
     context = {
         'user_profile': profile,
+        'orders' : orders,
+        'user':user,
     }
     return render(request, 'app/profile.html', context=context)
 
+
 def make_order(request):
-    pass
+    cart = Cart(request)
+    is_cart = bool(cart)
+    if request.method == 'POST':
+        updated_request = request.POST.copy()
+        updated_request.update({'total_cost': cart.get_total_price(),'user':request.user.id})
+        form = OrderForm(updated_request)
+        order = form.save(commit=False)
+        order.user = request.user
+        if form.is_valid():
+            print(form.cleaned_data)
+            print(updated_request)
+            order.save()
+    else:
+        form = OrderForm()
+    context = {
+        'cart': cart,
+        'form': form,
+    }
+    return render(request, 'app/order.html', context=context)
