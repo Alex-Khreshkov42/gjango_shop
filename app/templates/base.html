@@ -14,9 +14,9 @@
     </head>
     <ul>
         {% if user.is_authenticated %}
-            Welcome, <a href="{% url 'user_profile' 1 %}"> {{ user.username }}</a> <br>
+            Welcome, <a href="{% url 'user_profile' request.user.id %}"> {{ user.username }}</a> <br>
             <li><a href="{% url 'main' %}">Main</a></li>
-            <li><a href="{% url 'user_profile' 1%}">Profile</a></li>
+            <li><a href="{% url 'user_profile' request.user.id %}">Profile</a></li>
             <li><a href="{% url 'account_logout' %}">Sign Out</a></li>
             <li><a href="{% url 'account_email' %}">Change E-mail</a></li>
         {% else %}

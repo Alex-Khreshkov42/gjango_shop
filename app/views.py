@@ -1,4 +1,4 @@
-from django.http import HttpResponse
+from django.http import HttpResponse, Http404
 from django.shortcuts import render, get_object_or_404, redirect, get_list_or_404
 from django.views.decorators.http import require_POST
 
@@ -87,7 +87,7 @@ def show_cart(request):
     # print(cart.session['cart'])
     # cart.change_quantity(item1,5)
     # print(cart.session['cart'])
-    return render(request, 'app/cart.html', {'cart': cart, 'form': form})
+    return render(request, 'app/cart.html', {'cart': cart, 'form': form,'title':'Cart'})
 
 
 @require_POST
@@ -105,17 +105,20 @@ def update_count(request, item_slug):
 def show_profile(request, pk):
     profile = get_object_or_404(Profile, user_id=pk)
     user = get_object_or_404(User, id=pk)
-    orders = Order.objects.filter(user_id=pk)
-    # items = get_list_or_404(Item,id)
-    # items = Item.objects.filter(id__in=product_ids)  # 1 2 3
-    # items = get_list_or_404(Item, id__in=)
-
-    context = {
-        'user_profile': profile,
-        'orders': orders,
-        'user': user,
-    }
-    return render(request, 'app/profile.html', context=context)
+    if request.user == user or request.user.is_superuser:
+        orders = Order.objects.filter(user_id=pk)
+        # items = get_list_or_404(Item,id)
+        # items = Item.objects.filter(id__in=product_ids)  # 1 2 3
+        # items = get_list_or_404(Item, id__in=)
+        context = {
+            'user_profile': profile,
+            'orders': orders,
+            'user': user,
+            'title': f"{user.username}'s profile"
+        }
+        return render(request, 'app/profile.html', context=context)
+    else:
+        raise Http404("Access forbidden. You can't see another user's profile")
 
 
 def make_order(request):
@@ -136,5 +139,6 @@ def make_order(request):
     context = {
         'cart': cart,
         'form': form,
+        'title': 'Order',
     }
     return render(request, 'app/order.html', context=context)

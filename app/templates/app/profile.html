@@ -1,5 +1,7 @@
 {% extends 'base.html' %}
 {% load static %}
+
+
 {% block head_text %}
     <div class="alert alert-primary" role="alert">
         <h1 align="center">{{ user_profile.user.username }}'s profile</h1>
@@ -8,7 +10,7 @@
 
 {% block body %}
     <div class="profile_content">
-            <img id="profile_img" src="{{ user_profile.profile_pic.url }}">
+        <img id="profile_img" src="{{ user_profile.profile_pic.url }}">
         {{ user_profile.user.username }}
         <div class="profile_info">
             <div class="container">
@@ -59,7 +61,7 @@
                         {% for order in orders %}
                             <tr>
                                 <th scope="row">{{ order.id }}</th>
-                                <td>{{ order.items}}</td>
+                                <td>{{ order.items }}</td>
                                 <td>{{ order.created }}</td>
                                 <td>{{ order.updated }}</td>
                                 {% if order.issue_point %}
@@ -84,3 +86,4 @@
             </div>
         </div>
 {% endblock %}
+
