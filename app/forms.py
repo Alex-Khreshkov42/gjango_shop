@@ -1,6 +1,7 @@
 from django import forms
+from django.contrib.auth.models import User
 
-from app.models import Order, Comment
+from app.models import Order, Comment, Profile
 
 allowed_choices = [(i, str(i)) for i in range(1, 11)]
 
@@ -38,3 +39,20 @@ class AddCommentForm(forms.ModelForm):
             'text': forms.Textarea(attrs={'class': 'form-control','placeholder':'Your text'}),
             'mark': forms.Select(attrs={'class': 'form-control'}),
         }
+
+
+class AddProfileInfoForm(forms.ModelForm):
+    class Meta:
+        model = Profile
+        fields = ['phone', 'birth_date', 'profile_pic','location']
+        widgets = {
+            'phone': forms.TextInput(attrs={'class': 'form-control'}),
+            'birth_date': forms.DateInput(attrs={'class': 'form-control'}),
+            'location': forms.TextInput(attrs={'class': 'form-control'}),
+        }
+
+
+class AddUserInfoForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = ['username', 'first_name', 'last_name', 'email']

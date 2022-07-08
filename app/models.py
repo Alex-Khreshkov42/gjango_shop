@@ -95,11 +95,11 @@ class Cart:
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    phone = models.CharField(max_length=15, blank=True)
-    location = models.CharField(max_length=30, blank=True)
-    birth_date = models.DateField(blank=True)
-    profile_pic = models.ImageField(null=True, blank=True, upload_to="profiles_images/")
-    orders = models.ForeignKey('Order', on_delete=models.SET_NULL, blank=True, null=True)
+    phone = models.CharField(max_length=15, blank=True, null=True)
+    location = models.CharField(max_length=30, blank=True, null=True)
+    birth_date = models.DateField(blank=True, null=True)
+    profile_pic = models.ImageField(null=True, blank=True, upload_to="profiles_images/",
+                                    default="profiles_images/ava.png")
 
     def __str__(self):
         return f"User {self.user.username}"
@@ -150,4 +150,3 @@ class Comment(models.Model):
 
     def __str__(self):
         return f"Coment on: {self.item}"
-

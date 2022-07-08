@@ -2,7 +2,8 @@ from django.http import HttpResponse, Http404
 from django.shortcuts import render, get_object_or_404, redirect, get_list_or_404
 from django.views.decorators.http import require_POST
 
-from app.forms import UpdateCountForm, OrderForm, AddCommentForm
+from app.forms import UpdateCountForm, OrderForm, AddCommentForm, UserProfileForm, AddUserInfoForm, \
+    AddProfileInfoForm
 from app.models import Item, Category, Cart, User, Profile, Order, RatingMark, Comment
 
 
@@ -87,7 +88,7 @@ def show_cart(request):
     # print(cart.session['cart'])
     # cart.change_quantity(item1,5)
     # print(cart.session['cart'])
-    return render(request, 'app/cart.html', {'cart': cart, 'form': form,'title':'Cart'})
+    return render(request, 'app/cart.html', {'cart': cart, 'form': form, 'title': 'Cart'})
 
 
 @require_POST
@@ -103,18 +104,37 @@ def update_count(request, item_slug):
 
 
 def show_profile(request, pk):
+    #pk = user.id
     profile = get_object_or_404(Profile, user_id=pk)
     user = get_object_or_404(User, id=pk)
     if request.user == user or request.user.is_superuser:
         orders = Order.objects.filter(user_id=pk)
-        # items = get_list_or_404(Item,id)
-        # items = Item.objects.filter(id__in=product_ids)  # 1 2 3
-        # items = get_list_or_404(Item, id__in=)
+        for i in orders:
+            print(i.items)
+        user_form = UserProfileForm()
+
+        if request.method == 'POST':
+            profile_form = AddProfileInfoForm(request.POST,request.FILES,instance=profile)
+            print(request.POST)
+            if profile_form.is_valid():
+                profile_form.save()
+                return redirect('user_profile', pk)
+            else:
+                print(profile_form.errors.as_data())  # here you print errors to terminal
+        else:
+            profile_form = AddProfileInfoForm(
+                {
+                    'phone': user.profile.phone,
+                    'birth_date': user.profile.birth_date,
+                    'location': user.profile.location
+                })
         context = {
             'user_profile': profile,
             'orders': orders,
             'user': user,
-            'title': f"{user.username}'s profile"
+            'title': f"{user.username}'s profile",
+            'profile_form': profile_form,
+            'user_form': user_form,
         }
         return render(request, 'app/profile.html', context=context)
     else:

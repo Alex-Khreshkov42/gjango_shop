@@ -11,79 +11,75 @@
 {% block body %}
     <div class="profile_content">
         <img id="profile_img" src="{{ user_profile.profile_pic.url }}">
-        {{ user_profile.user.username }}
-        <div class="profile_info">
+        {{ user_profile.user.username }}<br><br>
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            New avatar: {{ profile_form.profile_pic }}
+            <hr>
             <div class="container">
                 <div class="row">
                     <div class="col-sm">
-                        Name:
-                        {% if user_profile.user.first_name %}
-                            {{ user_profile.user.first_name }}
-                        {% endif %}
+                        Phone: {{ profile_form.phone }}
+                        <span style="color: red">{{ profile_form.phone.errors }}</span>
                     </div>
                     <div class="col-sm">
-                        Last Name:
-                        {% if user_profile.user.last_name %}
-                            {{ user_profile.user.last_name }}
-                        {% endif %}
+                        Birth date: {{ profile_form.birth_date }}
+                        <span style="color: red">{{ profile_form.birth_date.errors }}</span>
                     </div>
                     <div class="col-sm">
-                        Phone:
-                        {% if user_profile.phone %}
-                            {{ user_profile.phone }}
-                        {% endif %}
-                    </div>
-                    <div class="col-sm">
-                        Date of birth:
-                        {% if user_profile.birth_date %}
-                            {{ user_profile.birth_date }}
-                        {% endif %}
+                        Location: {{ profile_form.location }}
+                        <span style="color: red">{{ profile_form.location.errors }}</span>
                     </div>
                 </div>
+                <br>
             </div>
-            <hr>
-            <div class="container">
-                <h3 align="center"> Your orders: </h3><br>
-                {% if orders %}
-                    <table class="table">
-                        <thead>
-                        <tr>
-                            <th scope="col">Number</th>
-                            <th scope="col">Items</th>
-                            <th scope="col">Created</th>
-                            <th scope="col">Updated</th>
-                            <th scope="col">Delivery/Issue point</th>
-                            <th scope="col">Cost</th>
-                            <th scope="col">Status</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        {% for order in orders %}
-                            <tr>
-                                <th scope="row">{{ order.id }}</th>
-                                <td>{{ order.items }}</td>
-                                <td>{{ order.created }}</td>
-                                <td>{{ order.updated }}</td>
-                                {% if order.issue_point %}
-                                    <td>{{ order.issue_point }}</td>
-                                {% endif %}
-                                {% if order.delivery_address %}
-                                    <td>{{ order.delivery_address }}</td>
-                                {% endif %}
-                                <td>{{ order.total_cost }}$</td>
-                                {% if order.status == 'done' %}
-                                    <td bgcolor="#adff2f">{{ order.status }}</td>
-                                {% else %}
-                                    <td bgcolor="aqua">{{ order.status }}</td>
-                                {% endif %}
-                            </tr>
-                        {% endfor %}
-                        </tbody>
-                    </table>
-                {% else %}
-                    <h1 align="center">No orders </h1>
-                {% endif %}
-            </div>
-        </div>
+            <button type="submit" class="btn btn-success">Update</button>
+    </div>
+    </form>
+    <hr>
+    <div class="container">
+        {% if orders %}
+            <h3 align="center"> Your orders: </h3><br>
+            <table class="table">
+                <thead>
+                <tr>
+                    <th scope="col">№</th>
+                    <th scope="col">Items</th>
+                    <th scope="col">Created</th>
+                    <th scope="col">Updated</th>
+                    <th scope="col">Delivery</th>
+                    <th scope="col">Issue point</th>
+                    <th scope="col">Cost</th>
+                    <th scope="col">Status</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for order in orders %}
+                    <tr>
+                        <th scope="row">{{ order.id }}</th>
+                        <td>
+                        {% for item in order.items.all %}
+                            <img width="50" src="{{ item.image.url }}">
+                            {{ item.title }} ({{ item.price }}$)<br>
+                         {% endfor %}
+                        </td>
+                        <td>{{ order.created }}</td>
+                        <td>{{ order.updated }}</td>
+                        <td>{{ order.issue_point }}</td>
+                        <td>{{ order.delivery_address }}</td>
+                        <td>{{ order.total_cost }}$</td>
+                        {% if order.status == 'done' %}
+                            <td bgcolor="#adff2f">{{ order.status }}</td>
+                        {% else %}
+                            <td bgcolor="aqua">{{ order.status }}</td>
+                        {% endif %}
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <h1 align="center">No orders </h1>
+        {% endif %}
+    </div>
 {% endblock %}
 
